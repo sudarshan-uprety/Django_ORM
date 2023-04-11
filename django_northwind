@@ -1,0 +1,50 @@
+1. From the following table, write a SQL query to find the name and year of the movies. Return movie title, movie release year.
+>>> result=Movie.objects.values('mov_title','mov_year')
+>>> result
+
+
+2. From the following table, write a SQL query to find when the movie 'American Beauty' released. Return movie release year. 
+
+>>> movie = Movie.objects.get(mov_title='American Beauty')
+>>> release_year=movie.mov_year
+>>> release_year
+1999
+
+
+
+3. From the following table, write a SQL query to find the movie that was released in 1999. Return movie title.
+
+>>> movie=Movie.objects.filter(mov_year='1999')
+>>> movie=movie.values('mov_title')
+>>> movie
+<QuerySet [{'mov_title': 'Eyes Wide Shut                                    '}, {'mov_title': 'American Beauty                                   '}]>
+
+
+
+4. From the following table, write a SQL query to find those movies, which were released before 1998. Return movie title.
+
+>>> movie = Movie.objects.filter(mov_year__lt=1998).values('mov_title')
+>>> movie
+<QuerySet [{'mov_title': 'Vertigo                                           '}, {'mov_title': 'The Innocents                                     '}, {'mov_title': 'Lawrence of Arabia                                '}, {'mov_title': 'The Deer Hunter                                   '}, {'mov_title': 'Amadeus                                           '}, {'mov_title': 'Blade Runner                                      '}, {'mov_title': 'The Usual Suspects                                '}, {'mov_title': 'Chinatown                                         '}, {'mov_title': 'Boogie Nights                                     '}, {'mov_title': 'Annie Hall                                        '}, {'mov_title': 'Princess Mononoke                                 '}, {'mov_title': 'The Shawshank Redemption                          '}, {'mov_title': 'Titanic                                           '}, {'mov_title': 'Good Will Hunting                                 '}, {'mov_title': 'Deliverance                                       '}, {'mov_title': 'Trainspotting                                     '}, {'mov_title': 'Aliens                                            '}, {'mov_title': 'Seven Samurai                                     '}, {'mov_title': 'Back to the Future                                '}, {'mov_title': 'Braveheart                                        '}]>
+>>> 
+
+
+
+5. From the following tables, write a SQL query to find the name of all reviewers and movies together in a single list. 
+
+>>> from django.db.models import Q
+>>> reviewer_names = Reviewer.objects.values_list('rev_name', flat=True)
+>>> movie_titles = Movie.objects.values_list('mov_title', flat=True)
+>>> result = reviewer_names.union(movie_titles)
+>>> result
+
+<QuerySet [None, 'The Usual Suspects                                ', 'Amadeus                                           ', 'American Beauty                                   ', 'Alec Shaw                     ', 'Boogie Nights                                     ', 'Hannah Steele                 ', 'Neal Wruck                    ', 'The Shawshank Redemption                          ', 'Richard Adams                 ', 'Titanic                                           ', 'Krug Stillo                   ', 'Paul Monks                    ', 'Righty Sock                   ', 'Seven Samurai                                     ', 'Sasha Goldshtein              ', 'The Deer Hunter                                   ', 'Jack Malvern                  ', 'Princess Mononoke                                 ', 'Lawrence of Arabia                                ', '...(remaining elements truncated)...']>
+>>> result
+<QuerySet [None, 'The Usual Suspects                                ', 'Amadeus                                           ', 'American Beauty                                   ', 'Alec Shaw                     ', 'Boogie Nights                                     ', 'Hannah Steele                 ', 'Neal Wruck                    ', 'The Shawshank Redemption                          ', 'Richard Adams                 ', 'Titanic                                           ', 'Krug Stillo                   ', 'Paul Monks                    ', 'Righty Sock                   ', 'Seven Samurai                                     ', 'Sasha Goldshtein              ', 'The Deer Hunter                                   ', 'Jack Malvern                  ', 'Princess Mononoke                                 ', 'Lawrence of Arabia                                ', '...(remaining elements truncated)...']>
+
+
+
+
+
+
+
