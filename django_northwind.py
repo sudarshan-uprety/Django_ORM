@@ -52,4 +52,4 @@ Movie.objects.filter(mov_id__in=['905', '907', '917']).values_list('mov_title', 
 
 
 
-
+#9. Question
