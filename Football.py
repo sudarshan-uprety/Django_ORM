@@ -59,3 +59,11 @@ MatchDetails.objects.filter(win_lose='W',goal_score='1',decided_by='N').count()
 
 
 #Q.15 From the following table, write a SQL query to count the number of players replaced in the tournament. Return number of players as "Player Replaced".
+
+
+# Error in table player_in_out i.e class PlayerInOut, so I have not solved this questions
+
+
+#Q.19 From the following table, write a SQL query to count the total number of goalless draws played in the entire tournament. Return number of goalless draws.
+MatchDetails.objects.filter(win_lose='D', goal_score=0).values('match_no').distinct().aggregate(count=Count('match_no'))
+
