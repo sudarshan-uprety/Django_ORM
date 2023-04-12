@@ -1,3 +1,5 @@
+from task1.models import Movie,Reviewer,Rating,Actor
+
 # 1. From the following table, write a SQL query to find the name and year of the movies. Return movie title, movie release year.
 
 Movie.objects.values('mov_title','mov_year')
@@ -24,7 +26,6 @@ Movie.objects.filter(mov_year__lt=1998).values('mov_title')
 # >>> 
 
 
-
 # 5. From the following tables, write a SQL query to find the name of all reviewers and movies together in a single list. 
 
 from django.db.models import Q
@@ -39,7 +40,6 @@ Reviewer.objects.values_list('rev_name', flat=True).union(Movie.objects.values_l
 
 Reviewer.objects.filter(rating__rev_stars__gte=7, rev_name__isnull=False).values_list('rev_name', flat=True)
 
-
 #7. From the following tables, write a SQL query to find the movies without any rating. Return movie title. 
 
 Movie.objects.exclude(mov_id__in=Rating.objects.values('mov_id')).values_list('mov_title', flat=True)
@@ -51,5 +51,11 @@ Movie.objects.filter(mov_id__in=['905', '907', '917']).values_list('mov_title', 
 
 
 
+#9. From the following table, write a SQL query to find the movie titles that contain the word 'Boogie Nights'. Sort the result-set in ascending order by movie year. Return movie ID, movie title and movie release year. 
 
-#9. Question
+Movie.objects.filter(Q(mov_title__contains='Boogie') & Q(mov_title__contains='Nights')).order_by(F('mov_year').asc()).values('mov_id', 'mov_title', 'mov_year')
+
+
+#10. From the following table, write a SQL query to find those actors with the first name 'Woody' and the last name 'Allen'. Return actor ID.
+
+Actor.objects.filter(act_fname='Woody', act_lname='Allen').values_list('act_id', flat=True)
