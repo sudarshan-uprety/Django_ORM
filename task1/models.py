@@ -1174,6 +1174,9 @@ class PenaltyShootout(models.Model):
         managed = False
         db_table = 'penalty_shootout'
 
+    # def __str__(self):
+    #     return self.player
+
 
 class Persons(models.Model):
     personid = models.IntegerField(blank=True, null=True)

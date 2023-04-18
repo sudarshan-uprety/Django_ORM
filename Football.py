@@ -1,5 +1,5 @@
-from task1.models import SoccerVenue,PlayerMast,GoalDetails,MatchMast,PenaltyShootout,MatchDetails,PlayerInOut
-from django.db.models import Count
+from task1.models import SoccerVenue,PlayerMast,GoalDetails,MatchMast,PenaltyShootout,MatchDetails,PlayerInOut,PlayerBooked
+from django.db.models import Count,F,Value
 
 
 #Q.1  From the following table, write a SQL query to count the number of venues for EURO cup 2016. Return number of venues.
@@ -67,3 +67,41 @@ MatchDetails.objects.filter(win_lose='W',goal_score='1',decided_by='N').count()
 #Q.19 From the following table, write a SQL query to count the total number of goalless draws played in the entire tournament. Return number of goalless draws.
 MatchDetails.objects.filter(win_lose='D', goal_score=0).values('match_no').distinct().aggregate(count=Count('match_no'))
 
+
+#Q.20 From the following table, write a SQL query to calculate the total number of players who were replaced during the extra time.
+PlayerInOut.objects.filter(in_out='I',play_schedule='ET').count()
+
+
+#Q.21 From the following table, write a SQL query to count the number of substitutes during various stages of the tournament. Sort the result-set in ascending order by play-half, play-schedule and number of substitute happened. Return play-half, play-schedule, number of substitute happened. 
+PlayerInOut.objects.filter(in_out='I').values('play_half', 'play_schedule').annotate(count=Count('*')).order_by('play_half', 'play_schedule','count')
+
+
+#Q.22 From the following table, write a SQL query to count the number of shots taken in penalty shootouts matches. Number of shots as "Number of Penalty Kicks". 
+PenaltyShootout.objects.aggregate(num_penalties=Count('*'))['num_penalties']
+
+
+#Q.23 From the following table, write a SQL query to count the number of shots that were scored in penalty shootouts matches. Return number of shots scored goal as "Goal Scored by Penalty Kicks".
+print('Goal Scored by Penalty Kicks',PenaltyShootout.objects.filter(score_goal='Y').count())
+
+
+#Q.24 From the following table, write a SQL query to count the number of shots missed or saved in penalty shootout matches. Return number of shots missed as "Goal missed or saved by Penalty Kicks".
+print('Goal missed or saved by Penalty Kicks: ',PenaltyShootout.objects.filter(score_goal='N').count())
+
+#Q.25 From the following table, write a SQL query to find the players with shot numbers they took in penalty shootout matches. Return match_no, Team, player_name, jersey_no, score_goal, kick_no.
+PenaltyShootout.objects.select_related('team','player').annotate(match_number=F('match_no'),country_name=F('team__country_name'),player_name=F('player__player_name'),jersey_no=F('player__jersey_no'),goal_score=Value('score_goal'),Kick_number=F('kick_no')).values('match_no','country_name','player_name','jersey_no','score_goal','kick_no')
+
+
+#Q.26 From the following table, write a SQL query to count the number of penalty shots taken by each team. Return country name, number of shots as "Number of Shots".
+PenaltyShootout.objects.select_related('team').annotate(country_name=F('team__country_name'),count=Count('*')).values('country_name').annotate(count=Count('*'))
+
+
+#Q.27 From the following table, write a SQL query to count the number of bookings in each half of play within the normal play schedule. Return play_half, play_schedule, number of booking happened. 
+PlayerBooked.objects.filter(play_schedule='NT').values('play_half','play_schedule').annotate(count=Count('*'))
+
+
+#Q.28 From the following table, write a SQL query to count the number of bookings during stoppage time.
+PlayerBooked.objects.filter(play_schedule='ST').count()
+
+
+#Q.29 From the following table, write a SQL query to count the number of bookings that happened in extra time. 
+PlayerBooked.objects.filter(play_schedule='ET').count()
